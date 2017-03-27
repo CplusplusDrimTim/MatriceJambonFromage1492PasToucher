@@ -29,7 +29,7 @@ public:
 		{ return pcEXCMessage; }
 	void EXCecrireMessage(const char * pcMessage);
 
-	//Surcharge de l'opérateur '='
+	//Surcharge de l'opÃ©rateur '='
 	Cexception & operator=(Cexception EXCParam);
 };
 
@@ -39,6 +39,5 @@ inline void Cexception::EXCecrireMessage(const char * pcMessage)
 		delete pcEXCMessage;
 	pcEXCMessage = _strdup(pcMessage);
 }
-
 
 #endif // !CEXCEPTION_H
