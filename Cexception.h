@@ -40,4 +40,5 @@ inline void Cexception::EXCecrireMessage(const char * pcMessage)
 	pcEXCMessage = _strdup(pcMessage);
 }
 
+
 #endif // !CEXCEPTION_H
