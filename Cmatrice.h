@@ -23,6 +23,7 @@ public:
 	//Constructeurs et destructeur
 	Cmatrice();
 	Cmatrice(unsigned int uiNombreLignes, unsigned int uiNombreColonnes, MType ** ppMTPtableau);
+	Cmatrice(unsigned int uiLignes, unsigned int uiColonnes);
 	Cmatrice(Cmatrice<MType> & MATparam);
 	~Cmatrice(void);
 
