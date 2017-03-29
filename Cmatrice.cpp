@@ -53,7 +53,7 @@ Sortie		: Rien
 Entraîne	: (L'objet en cours est initialisé à partir des dimensions)
 *************************************/
 template <class MType>
-Cmatrice1<MType>::Cmatrice1(unsigned int uiNombreLignes, unsigned int uiNombreColonnes)
+Cmatrice<MType>::Cmatrice(unsigned int uiNombreLignes, unsigned int uiNombreColonnes)
 {
 	uiMATnombreLignes = uiNombreLignes;
 	uiMATnombreColonnes = uiNombreColonnes;
