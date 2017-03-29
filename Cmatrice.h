@@ -50,6 +50,8 @@ public:
 
 //Surcharges d'opérateurs
 template <class MType> ostream & operator<<(ostream& os, Cmatrice<MType> MATparam);
+template <class MType, class ConstantType> 
+Cmatrice<MType> operator*(ConstantType CTPconstante,Cmatrice<MType> MATparam);
 
 #include "Cmatrice.cpp"
 
