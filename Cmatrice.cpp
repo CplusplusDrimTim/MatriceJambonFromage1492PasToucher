@@ -178,7 +178,7 @@ Cmatrice1<MType> Cmatrice1<MType>::operator/(ConstantType CTPconstante)
 {
 	if (CTPconstante==0)
 	{
-		Cexception EXCobjet(ERREUR_DIVISION_PAR_ZERO , "Erreur division par zéro :valeur de CTPconstante incorrecte, on ne peut diviser par zéro");
+		Cexception EXCobjet(ERREUR_DIVISION_PAR_ZERO , "Erreur division par zero :valeur de CTPconstante incorrecte, on ne peut diviser par zero");
 		throw EXCobjet;
 	}
 	for(unsigned int uicptl = 0; uicptl<uiMATnombreLignes; uicptl++)
