@@ -135,6 +135,62 @@ void Cmatrice<MType>::MATsetElement(unsigned int uiIndiceLigne, unsigned int uiI
 		ppMTPMATmatrice[uiIndiceLigne][uiIndiceColonne] = MTPelement;
 }
 
+/************************************
+	Produit d'une matrice et d'une constante
+*************************************
+Entrée		: Matrice d'éléments MType à multiplier à la constante ConstantType
+Nécessité	: (La matrice et la constante sont de même type / MType=ConstantType)
+			ET (Une surcharge de l'opérateur '*' est définie pour MType)
+			ET (Une surcharge de l'opérateur '*' est définie pour ConstantType)
+			ET (MType et ConstantType doivent supporter l'initialisation suivante : MType MTPexemple = 0 et ConstantType CSTexemple = 0)
+Sortie		: Nouvelle Cmatrice<MType>, produit d'une matrice et d'une constante
+Entraîne	: (L'objet en sortie est créé et initialisé par produit s"un objet Cmatrice<MType>)
+*************************************/
+template <class MType>
+template <class ConstantType>
+Cmatrice<MType> Cmatrice<MType>::operator*(ConstantType CTPconstante)
+{
+	for(unsigned int uicptl = 0; uicptl<uiMATnombreLignes; uicptl++)
+	{
+		for(unsigned int uicptc = 0; uicptc<uiMATnombreColonnes; uicptc++)
+		{
+			ppMTPMATmatrice[uicptl][uicptc]= CTPconstante * ppMTPMATmatrice[uicptl][uicptc];
+		}
+	}
+	return(*this);
+}
+
+
+/************************************
+	Division d'une matrice par une constante
+*************************************
+Entrée		: Matrice d'éléments MType à diviser par une constante ConstantType
+Nécessité	: (La matrice et la constante sont de même type / MType=ConstantType)
+			ET (Une surcharge de l'opérateur '*' est définie pour MType)
+			ET (Une surcharge de l'opérateur '*' est définie pour ConstantType)
+			ET (MType et ConstantType doivent supporter l'initialisation suivante : MType MTPexemple = 0 et ConstantType CSTexemple = 0)
+Sortie		: Nouvelle Cmatrice<MType>, produit d'une matrice et d'une constante
+Entraîne	: (L'objet en sortie est créé et initialisé par produit s"un objet Cmatrice<MType>)
+*************************************/
+template <class MType>
+template <class ConstantType>
+Cmatrice1<MType> Cmatrice1<MType>::operator/(ConstantType CTPconstante)
+{
+	if (CTPconstante==0)
+	{
+		Cexception EXCobjet(ERREUR_DIVISION_PAR_ZERO , "Erreur division par zéro :valeur de CTPconstante incorrecte, on ne peut diviser par zéro");
+		throw EXCobjet;
+	}
+	for(unsigned int uicptl = 0; uicptl<uiMATnombreLignes; uicptl++)
+	{
+		for(unsigned int uicptc = 0; uicptc<uiMATnombreColonnes; uicptc++)
+		{
+			ppMTPMATmatrice[uicptl][uicptc]= ppMTPMATmatrice[uicptl][uicptc] / CTPconstante;
+		}
+	}
+	return(*this);
+}
+
 
 /************************************
 	Transposition de matrice
