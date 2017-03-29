@@ -220,6 +220,81 @@ Cmatrice<MType> Cmatrice<MType>::operator+(Cmatrice<MType> MATparam)
 
 
 /************************************
+	Soustraction de matrices
+*************************************
+Entrée		: Matrice d'éléments MType à soustraire à la matrice courante
+Nécessité	: (Les deux matrices sont de même type / classe MType)
+			ET (Une surcharge de l'opérateur '-' est définie pour MType)
+Sortie		: Nouvelle Cmatrice<MType>, soustraction des deux matrices
+Entraîne	: (L'objet en sortie est créé et initialisé par soustraction de l'objet en paramètre à l'ojet courant)
+			OU (Une exception est levée si les deux matrices ne sont pas de mêmes dimensions)
+*************************************/
+template <class MType>
+Cmatrice<MType> Cmatrice<MType>::operator-(Cmatrice<MType> MATparam)
+{
+	if (uiMATnombreLignes != MATparam.uiMATnombreLignes || uiMATnombreColonnes != MATparam.uiMATnombreColonnes)
+	{
+		Cexception EXCobjet(ERREUR_DIMENSIONS_INCORRECTES, "Erreur addition de matrices : Dimensions incompatibles");
+		throw EXCobjet;
+	}
+	else
+	{
+		//Allocation tableau temporaire 2 dimensions
+		int ** ppMTPresultat = new MType*[uiMATnombreLignes];
+		for (unsigned int uiBoucle = 0; uiBoucle < uiMATnombreLignes; uiBoucle++)
+			ppMTPresultat[uiBoucle] = new MType[uiMATnombreColonnes];
+
+		//Addition et affectation dans le tableau temporaire
+		for (unsigned int uiBoucleLignes = 0; uiBoucleLignes < uiMATnombreLignes; uiBoucleLignes++)
+			for (unsigned int uiBoucleColonnes = 0; uiBoucleColonnes < uiMATnombreColonnes; uiBoucleColonnes++)
+				ppMTPresultat[uiBoucleLignes][uiBoucleColonnes] = ppMTPMATmatrice[uiBoucleLignes][uiBoucleColonnes] 
+																	- MATparam.ppMTPMATmatrice[uiBoucleLignes][uiBoucleColonnes];
+		
+		//Construction de la nouvelle matrice et retour
+		Cmatrice<MType> MATresultat(uiMATnombreLignes, uiMATnombreColonnes, ppMTPresultat);
+		return MATresultat;		
+	}
+}
+
+
+/************************************
+	Surcharge de l'opérateur d'affectation
+*************************************
+Entrée		: L'objet Cmatrice<MType> à copier
+Nécessité	: Néant
+Sortie		: L'objet à modifier, modifié par copie de l'objet d'entrée
+Entraîne	: (L'objet en cours est modifié par copie du contenu du paramètre)
+*************************************/
+template <class MType>
+Cmatrice<MType> & Cmatrice<MType>::operator=(Cmatrice<MType> MATparam)
+{
+	//Désallocation de la précédente matrice de l'objet en cours
+	for (unsigned int uiBoucleLignes = 0; uiBoucleLignes < uiMATnombreLignes; uiBoucleLignes++)
+		delete [] ppMTPMATmatrice[uiBoucleLignes];
+	delete [] ppMTPMATmatrice;
+
+	//Définition des nouvelles dimensions
+	uiMATnombreLignes = MATparam.uiMATnombreLignes;
+	uiMATnombreColonnes = MATparam.uiMATnombreColonnes;
+
+	//Allocation de la nouvelle matrice et recopie des valeurs
+	if (MATparam.ppMTPMATmatrice == NULL)
+		ppMTPMATmatrice = NULL;
+	else
+	{
+		ppMTPMATmatrice = new MType*[uiMATnombreLignes];
+		for (unsigned int uiBoucleLignes = 0; uiBoucleLignes < uiMATnombreLignes; uiBoucleLignes++)
+			ppMTPMATmatrice[uiBoucleLignes] = new MType[uiMATnombreColonnes];
+
+		for (unsigned int uiBoucleLignes = 0; uiBoucleLignes < uiMATnombreLignes; uiBoucleLignes++)
+			for (unsigned int uiBoucleColonnes = 0; uiBoucleColonnes < uiMATnombreColonnes; uiBoucleColonnes++)
+				ppMTPMATmatrice[uiBoucleLignes][uiBoucleColonnes] = MATparam.ppMTPMATmatrice[uiBoucleLignes][uiBoucleColonnes];
+	}
+
+	return *this;
+}
+
+/************************************
 	Surcharge opérateur de sortie standard 
 *************************************
 Entrée		: Référence sur le flux de sortie
