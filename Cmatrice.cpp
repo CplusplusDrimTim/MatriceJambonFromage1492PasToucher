@@ -142,7 +142,7 @@ Entrée		: Matrice d'éléments MType à multiplier à la constante ConstantType
 Nécessité	: (La matrice et la constante sont de même type / MType=ConstantType)
 			ET (Une surcharge de l'opérateur '*' est définie pour MType)
 			ET (Une surcharge de l'opérateur '*' est définie pour ConstantType)
-			ET (MType et ConstantType doivent supporter l'initialisation suivante : MType MTPexemple = 0 et ConstantType CSTexemple = 0)
+			ET (MType et ConstantType doivent supporter l'initialisation suivante : MType MTPexemple = 0 et ConstantType CTPexemple = 0)
 Sortie		: Nouvelle Cmatrice<MType>, produit d'une matrice et d'une constante
 Entraîne	: (L'objet en sortie est créé et initialisé par produit s"un objet Cmatrice<MType>)
 *************************************/
@@ -160,6 +160,37 @@ Cmatrice<MType> Cmatrice<MType>::operator*(ConstantType CTPconstante)
 	return(*this);
 }
 
+/************************************
+	Produit d'une matrice et d'une constante
+*************************************
+Entrée		: Matrice d'éléments MType à multiplier à la constante ConstantType
+Nécessité	: (La matrice et la constante sont de même type / MType=ConstantType)
+			ET (Une surcharge de l'opérateur '*' est définie pour MType)
+			ET (Une surcharge de l'opérateur '*' est définie pour ConstantType)
+			ET (MType et ConstantType doivent supporter l'initialisation suivante : MType MTPexemple = 0 et ConstantType CTPexemple = 0)
+Sortie		: Nouvelle Cmatrice<MType>, produit d'une matrice et d'une constante
+Entraîne	: (L'objet en sortie est créé et initialisé par produit s"un objet Cmatrice<MType>)
+*************************************/
+template <class MType, class ConstantType> 
+Cmatrice1<MType> operator*(ConstantType CTPconstante, Cmatrice1<MType> MATparam)
+{
+	unsigned int uilignes=MATparam.MATgetNbrLignes();
+	unsigned int uicolonnes=MATparam.MATgetNbrColonnes();
+	MType ** ppMTtableau;
+	ppMTtableau = new MType*[uilignes];
+	for (unsigned int uiBoucle = 0; uiBoucle < uilignes; uiBoucle++)
+		ppMTtableau[uiBoucle] = new MType[uicolonnes];
+
+	for(unsigned int uicptl = 0; uicptl<uilignes; uicptl++)
+	{
+		for(unsigned int uicptc = 0; uicptc<uicolonnes; uicptc++)
+		{
+			ppMTtableau[uicptl][uicptc] = CTPconstante * MATparam.MATgetElement(uicptl,uicptc);
+		}
+	}
+	Cmatrice1<MType> MAT1(uilignes,uicolonnes,ppMTtableau);
+	return(MAT1);
+}
 
 /************************************
 	Division d'une matrice par une constante
