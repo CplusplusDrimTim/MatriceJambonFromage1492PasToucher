@@ -212,8 +212,13 @@ Cmatrice<MType> Cmatrice<MType>::operator+(Cmatrice<MType> MATparam)
 				ppMTPresultat[uiBoucleLignes][uiBoucleColonnes] = ppMTPMATmatrice[uiBoucleLignes][uiBoucleColonnes] 
 																	+ MATparam.ppMTPMATmatrice[uiBoucleLignes][uiBoucleColonnes];
 		
-		//Construction de la nouvelle matrice et retour
 		Cmatrice<MType> MATresultat(uiMATnombreLignes, uiMATnombreColonnes, ppMTPresultat);
+
+		//Désallocation du tableau 2D temporaire
+		for (unsigned int uiBoucleLignes = 0; uiBoucleLignes < uiMATnombreLignes; uiBoucleLignes++)
+			delete [] ppMTPresultat[uiBoucleLignes];
+		delete [] ppMTPelementsTransposes;
+
 		return MATresultat;		
 	}
 }
@@ -244,15 +249,73 @@ Cmatrice<MType> Cmatrice<MType>::operator-(Cmatrice<MType> MATparam)
 		for (unsigned int uiBoucle = 0; uiBoucle < uiMATnombreLignes; uiBoucle++)
 			ppMTPresultat[uiBoucle] = new MType[uiMATnombreColonnes];
 
-		//Addition et affectation dans le tableau temporaire
+		//Soustraction et affectation dans le tableau temporaire
 		for (unsigned int uiBoucleLignes = 0; uiBoucleLignes < uiMATnombreLignes; uiBoucleLignes++)
 			for (unsigned int uiBoucleColonnes = 0; uiBoucleColonnes < uiMATnombreColonnes; uiBoucleColonnes++)
 				ppMTPresultat[uiBoucleLignes][uiBoucleColonnes] = ppMTPMATmatrice[uiBoucleLignes][uiBoucleColonnes] 
 																	- MATparam.ppMTPMATmatrice[uiBoucleLignes][uiBoucleColonnes];
 		
-		//Construction de la nouvelle matrice et retour
 		Cmatrice<MType> MATresultat(uiMATnombreLignes, uiMATnombreColonnes, ppMTPresultat);
-		return MATresultat;		
+
+		//Désallocation du tableau 2D temporaire
+		for (unsigned int uiBoucleLignes = 0; uiBoucleLignes < uiMATnombreLignes; uiBoucleLignes++)
+			delete [] ppMTPresultat[uiBoucleLignes];
+		delete [] ppMTPelementsTransposes;
+
+		return MATresultat;			
+	}
+}
+
+
+/************************************
+	Produit de matrices
+*************************************
+Entrée		: Matrice d'éléments MType à multiplier à la matrice courante
+Nécessité	: (Les deux matrices sont de même type / classe MType)
+			ET (Une surcharge de l'opérateur '*' est définie pour MType)
+			ET (Une surcharge de l'opérateur '+' est définie pour MType)
+			ET (MType doit supporter l'initialisation suivante : MType MTPexemple = 0)
+Sortie		: Nouvelle Cmatrice<MType>, produit des deux matrices
+Entraîne	: (L'objet en sortie est créé et initialisé par produit des deux objets Cmatrice<MType>)
+			OU (Une exception est levée si les deux matrices ont des dimensions incompatibles)
+*************************************/
+template <class MType>
+Cmatrice<MType> Cmatrice<MType>::operator*(Cmatrice<MType> MATparam)
+{	
+	if (uiMATnombreColonnes != MATparam.uiMATnombreLignes)
+	{
+		Cexception EXCobjet(ERREUR_DIMENSIONS_INCORRECTES, "Erreur produit de matrices : Dimensions incompatibles");
+		throw EXCobjet;
+	}
+	else
+	{
+		//Allocation tableau temporaire 2 dimensions
+		int ** ppMTPresultat = new MType*[uiMATnombreLignes];
+		for (unsigned int uiBoucle = 0; uiBoucle < uiMATnombreLignes; uiBoucle++)
+			ppMTPresultat[uiBoucle] = new MType[MATparam.uiMATnombreColonnes];
+
+		//Produit et affectation dans le tableau temporaire
+		for (unsigned int uiBoucleLignes = 0; uiBoucleLignes < uiMATnombreLignes; uiBoucleLignes++)
+		{
+			for (unsigned int uiBoucleColonnes = 0; uiBoucleColonnes < MATparam.uiMATnombreColonnes; uiBoucleColonnes++)
+			{
+				MType MTPresultatElement = 0;
+				for (unsigned int uiBoucleAddition = 0; uiBoucleAddition < uiMATnombreColonnes; uiBoucleAddition++)
+					MTPresultatElement = MTPresultatElement + ppMTPMATmatrice[uiBoucleLignes][uiBoucleAddition]
+												* MATparam.ppMTPMATmatrice[uiBoucleAddition][uiBoucleColonnes];
+
+				ppMTPresultat[uiBoucleLignes][uiBoucleColonnes] = MTPresultatElement;
+			}
+		}
+
+		Cmatrice<MType> MATresultat(uiMATnombreLignes, MATparam.uiMATnombreColonnes, ppMTPresultat);
+
+		//Désallocation du tableau 2D temporaire
+		for (unsigned int uiBoucleLignes = 0; uiBoucleLignes < uiMATnombreLignes; uiBoucleLignes++)
+			delete [] ppMTPresultat[uiBoucleLignes];
+		delete [] ppMTPresultat;
+
+		return MATresultat;	
 	}
 }
 
