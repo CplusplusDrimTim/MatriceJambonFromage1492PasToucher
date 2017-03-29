@@ -35,19 +35,20 @@ public:
 	MType MATgetElement(unsigned int uiIndiceLigne, unsigned int uiIndiceColonne) const;
 	void MATsetElement(unsigned int uiIndiceLigne, unsigned int uiIndiceColonne, MType MTPelement);
 
-	//Méthode
+	//MÃ©thode
 	Cmatrice<MType> MATtransposer();
 
-	//Surcharges d'opérateurs
+	//Surcharges d'opÃ©rateurs
 	template <class ConstantType> Cmatrice<MType> operator*(ConstantType CTPconstante);
 	template <class ConstantType> Cmatrice<MType> operator/(ConstantType CTPconstante);
 
 	Cmatrice<MType> operator+(Cmatrice<MType> MATparam);
 	Cmatrice<MType> operator-(Cmatrice<MType> MATparam);
 	Cmatrice<MType> operator*(Cmatrice<MType> MATparam);
+	Cmatrice<MType> & operator=(Cmatrice<MType> MATparam);
 };
 
-//Surcharges d'opérateurs
+//Surcharges d'opÃ©rateurs
 template <class MType> ostream & operator<<(ostream& os, Cmatrice<MType> MATparam);
 
 #include "Cmatrice.cpp"
