@@ -161,7 +161,7 @@ Cmatrice<MType> Cmatrice<MType>::operator*(ConstantType CTPconstante)
 }
 
 /************************************
-	Produit d'une matrice et d'une constante
+	Produit d'une constante et d'une matrice
 *************************************
 Entrée		: Matrice d'éléments MType à multiplier à la constante ConstantType
 Nécessité	: (La matrice et la constante sont de même type / MType=ConstantType)
@@ -172,7 +172,7 @@ Sortie		: Nouvelle Cmatrice<MType>, produit d'une matrice et d'une constante
 Entraîne	: (L'objet en sortie est créé et initialisé par produit s"un objet Cmatrice<MType>)
 *************************************/
 template <class MType, class ConstantType> 
-Cmatrice1<MType> operator*(ConstantType CTPconstante, Cmatrice1<MType> MATparam)
+Cmatrice<MType> operator*(ConstantType CTPconstante, Cmatrice<MType> MATparam)
 {
 	unsigned int uilignes=MATparam.MATgetNbrLignes();
 	unsigned int uicolonnes=MATparam.MATgetNbrColonnes();
@@ -188,7 +188,7 @@ Cmatrice1<MType> operator*(ConstantType CTPconstante, Cmatrice1<MType> MATparam)
 			ppMTtableau[uicptl][uicptc] = CTPconstante * MATparam.MATgetElement(uicptl,uicptc);
 		}
 	}
-	Cmatrice1<MType> MAT1(uilignes,uicolonnes,ppMTtableau);
+	Cmatrice<MType> MAT1(uilignes,uicolonnes,ppMTtableau);
 	return(MAT1);
 }
 
