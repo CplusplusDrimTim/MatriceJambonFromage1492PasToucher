@@ -234,7 +234,7 @@ Cmatrice<MType> Cmatrice<MType>::operator-(Cmatrice<MType> MATparam)
 {
 	if (uiMATnombreLignes != MATparam.uiMATnombreLignes || uiMATnombreColonnes != MATparam.uiMATnombreColonnes)
 	{
-		Cexception EXCobjet(ERREUR_DIMENSIONS_INCORRECTES, "Erreur addition de matrices : Dimensions incompatibles");
+		Cexception EXCobjet(ERREUR_DIMENSIONS_INCORRECTES, "Erreur soustraction de matrices : Dimensions incompatibles");
 		throw EXCobjet;
 	}
 	else
