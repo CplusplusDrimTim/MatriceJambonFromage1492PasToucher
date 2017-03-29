@@ -17,7 +17,7 @@ Cmatrice<MType>::Cmatrice()
 
 
 /************************************
-	Constructeur de confort
+	Constructeur de confort 1
 *************************************
 Entrée		: Nombre de lignes de la matrice,
 				Nombre de colonnes de la matrice,
@@ -40,6 +40,26 @@ Cmatrice <MType>::Cmatrice(unsigned int uiNombreLignes, unsigned int uiNombreCol
 	for (unsigned int uiBoucleLignes = 0; uiBoucleLignes < uiMATnombreLignes; uiBoucleLignes++)
 		for (unsigned int uiBoucleColonnes = 0; uiBoucleColonnes < uiMATnombreColonnes; uiBoucleColonnes++)
 			ppMTPMATmatrice[uiBoucleLignes][uiBoucleColonnes] = ppMTPtableau[uiBoucleLignes][uiBoucleColonnes];
+}
+
+
+/************************************
+	Constructeur de confort 2
+*************************************
+Entrée		: Nombre de lignes de la matrice,
+				Nombre de colonnes de la matrice,
+Nécessité	: Rien
+Sortie		: Rien
+Entraîne	: (L'objet en cours est initialisé à partir des dimensions)
+*************************************/
+template <class MType>
+Cmatrice1<MType>::Cmatrice1(unsigned int uiNombreLignes, unsigned int uiNombreColonnes)
+{
+	uiMATnombreLignes = uiNombreLignes;
+	uiMATnombreColonnes = uiNombreColonnes;
+	ppMTPMATmatrice = new MType*[uiMATnombreLignes];
+		for (unsigned int uiBoucle = 0; uiBoucle < uiMATnombreLignes; uiBoucle++)
+			ppMTPMATmatrice[uiBoucle] = new MType[uiMATnombreColonnes];
 }
 
 /************************************
@@ -135,6 +155,7 @@ void Cmatrice<MType>::MATsetElement(unsigned int uiIndiceLigne, unsigned int uiI
 		ppMTPMATmatrice[uiIndiceLigne][uiIndiceColonne] = MTPelement;
 }
 
+
 /************************************
 	Produit d'une matrice et d'une constante
 *************************************
@@ -159,6 +180,7 @@ Cmatrice<MType> Cmatrice<MType>::operator*(ConstantType CTPconstante)
 	}
 	return(*this);
 }
+
 
 /************************************
 	Produit d'une constante et d'une matrice
@@ -191,6 +213,7 @@ Cmatrice<MType> operator*(ConstantType CTPconstante, Cmatrice<MType> MATparam)
 	Cmatrice<MType> MAT1(uilignes,uicolonnes,ppMTtableau);
 	return(MAT1);
 }
+
 
 /************************************
 	Division d'une matrice par une constante
