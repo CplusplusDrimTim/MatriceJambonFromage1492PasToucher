@@ -1,4 +1,14 @@
 
+char * positionnerCurseur(char* pcTempString);
+
+/*****************************************************************************************************************************
+******************************************************************************************************************************
+		Définition des méthodes de Cmatrice
+******************************************************************************************************************************
+******************************************************************************************************************************/
+
+
+
 /************************************
 	Constructeur par défaut
 *************************************
@@ -467,6 +477,17 @@ Cmatrice<MType> & Cmatrice<MType>::operator=(Cmatrice<MType> MATparam)
 	return *this;
 }
 
+
+
+/*****************************************************************************************************************************
+******************************************************************************************************************************
+		Définition des fonctions extérieures à Cmatrice
+******************************************************************************************************************************
+******************************************************************************************************************************/
+
+
+
+
 /************************************
 	Surcharge opérateur de sortie standard 
 *************************************
@@ -487,4 +508,162 @@ ostream & operator<<(ostream& os, Cmatrice<MType> MATparam)
 		os << endl;
 	}
 	return os;
+}
+
+
+
+/************************************
+	Positionneur de curseur pour lecture
+*************************************
+Entrée		: Chaîne de caractères temporaire à parcourir
+Nécessité	: Néant
+Sortie		: Pointeur sur le char à lire
+Entraîne	: (Le pointeur est retourné)
+			OU (Une exception est levée en cas de format incorrect)
+*************************************/
+char * positionnerCurseur(char* pcTempString)
+{
+	char * pcBeginCursor;
+
+	pcBeginCursor = strchr(pcTempString, '=');
+	if (pcBeginCursor == NULL)
+	{
+		Cexception EXCobjet(ERREUR_FORMAT_FICHIER, "Erreur format fichier : Format non conforme");
+		throw EXCobjet;
+	}
+	pcBeginCursor++;
+	while ((*pcBeginCursor == ' ' || *pcBeginCursor == '\t') && *pcBeginCursor != '\0')
+		pcBeginCursor++;
+
+	if (*pcBeginCursor == '\0')
+	{
+		Cexception EXCobjet(ERREUR_FORMAT_FICHIER, "Erreur format fichier : Format non conforme");
+		throw EXCobjet;
+	}
+
+	return pcBeginCursor;
+}
+
+
+/************************************
+	Parser
+*************************************
+Entrée		: Nom du fichier à lire
+Nécessité	: (Le fichier respecte le format spécifié)
+Sortie		: Cmatrice<double> initialisée à partir du fichier
+Entraîne	: (Une Cmatrice<double> est initialisée)
+			OU (Une exception est levée en cas d'échec d'ouverture)
+			OU (Une exception est levée en cas de format incorrect)
+			OU (Une exception est levée en cas de type différent de double)
+Indication	: Les espaces et tabulations sont pris en charge par le parser.
+Warning		: Si les éléments de la matrices ne sont pas saisis correctement (nbColonnes éléments par ligne, nbLignes d'éléments),
+				la matrice sera initialisée avec les n premiers double rencontrés. Le reste de la matrice sera initialisé avec des
+				valeurs non prédictibles.
+*************************************/
+Cmatrice<double> lireMatrice(const char * nomFichier)
+{
+	char pcTempString[255];
+	char * pcBeginCursor;
+	char * pcEndPointeur;	//Pour le strtol
+	unsigned int uiNbrLignes = 0;
+	unsigned int uiNbrColonnes = 0;
+	double ** ppdElementsMatrice;
+
+
+	//ouverture du fichier en lecture
+	ifstream flux(nomFichier, ios::out);
+	
+	//Si l'ouverture a échouée
+	if (flux.fail())
+	{
+		Cexception EXCobjet(ERREUR_OUVERTURE_FICHIER, "Erreur ouverture fichier : Fichier introuvable");
+		throw EXCobjet;
+	}
+	
+	//==============================================
+	//Lecture de la 1ère ligne
+	//==============================================
+	flux.getline(pcTempString, 255);
+	
+	//Echec de lecture ou dépassement du buffer
+	if (flux.fail())
+	{
+		Cexception EXCobjet(ERREUR_FORMAT_FICHIER, "Erreur format fichier : Format non conforme");
+		throw EXCobjet;
+	}
+
+	pcBeginCursor = positionnerCurseur(pcTempString);
+
+	//"double" contient6 caractères => on ne compare que les 6 1ers char
+	//Si le type "double" n'est pas spécifié, erreur.
+	if (_strnicmp(pcBeginCursor, "double", 6) != 0)
+	{
+		Cexception EXCobjet(ERREUR_FORMAT_FICHIER, "Erreur format fichier : Type \"double\" attendu");
+		throw EXCobjet;
+	}
+
+	pcBeginCursor = NULL;
+
+	//==============================================
+	//Ligne suivante
+	//==============================================
+	flux.getline(pcTempString, 255);
+
+	//Echec de lecture ou dépassement du buffer
+	if (flux.fail())
+	{
+		Cexception EXCobjet(ERREUR_FORMAT_FICHIER, "Erreur format fichier : Format non conforme");
+		throw EXCobjet;
+	}
+
+	pcBeginCursor = positionnerCurseur(pcTempString);
+
+	uiNbrLignes = (int) strtol(pcBeginCursor, &pcEndPointeur, 0);	//Si pas de valeur valide, dimension considérée nulle.
+
+	//==============================================
+	//Ligne suivante
+	//==============================================
+	flux.getline(pcTempString, 255);
+
+	//Echec de lecture ou dépassement du buffer
+	if (flux.fail())
+	{
+		Cexception EXCobjet(ERREUR_FORMAT_FICHIER, "Erreur format fichier : Format non conforme");
+		throw EXCobjet;
+	}
+
+	pcBeginCursor = positionnerCurseur(pcTempString);
+
+	uiNbrColonnes = (int) strtol(pcBeginCursor, &pcEndPointeur, 0);	//Si pas de valeur valide, dimension considérée nulle.
+
+	//==============================================
+	//Initialisation matrice
+	//==============================================
+
+	//Si une des dimension est nulle, on retourne une matrice initialisée par le constructeur par défaut
+	if (uiNbrLignes == 0 || uiNbrColonnes == 0)
+	{
+		Cmatrice<double> MATmatrice;
+		return MATmatrice;
+	}
+
+	//Lecture d'une ligne "dans le vide" pour positionner le curseur
+	flux.getline(pcTempString, 255);
+
+	//Allocation du tableau de la matrice
+	ppdElementsMatrice = new double*[uiNbrLignes];
+	for (unsigned int uiBoucle = 0; uiBoucle < uiNbrLignes; uiBoucle++)
+		ppdElementsMatrice[uiBoucle] = new double[uiNbrColonnes];
+
+	//Initialisation de la matrice
+	for (unsigned int uiBoucleLignes = 0; uiBoucleLignes < uiNbrLignes; uiBoucleLignes++)
+	{
+		for (unsigned int uiBoucleColonnes = 0; uiBoucleColonnes < uiNbrColonnes; uiBoucleColonnes++)
+			flux >> ppdElementsMatrice[uiBoucleLignes][uiBoucleColonnes];
+	}
+
+	flux.close();
+
+	Cmatrice<double> MATmatrice(uiNbrLignes, uiNbrColonnes, ppdElementsMatrice);
+	return MATmatrice;
 }
