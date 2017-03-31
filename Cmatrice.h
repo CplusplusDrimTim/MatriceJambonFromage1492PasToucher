@@ -47,7 +47,7 @@ public:
 	Cmatrice<MType> operator-(Cmatrice<MType> MATparam);
 	Cmatrice<MType> operator*(Cmatrice<MType> MATparam);
 	Cmatrice<MType> & operator=(Cmatrice<MType> MATparam);
-};
+}
 
 //Surcharges d'opérateurs
 template <class MType> ostream & operator<<(ostream& os, Cmatrice<MType> MATparam);
