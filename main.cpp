@@ -1,62 +1,73 @@
-#include "Cmatrice.h"
+#pragma once
+#include "Cexception.h"
+#include <string.h>
+#include <iostream>
+#include <fstream>
+using namespace std;
 
 
-void main()
+#ifndef CMATRICE_H
+#define CMATRICE_H
+
+#define ERREUR_INDICE_INCORRECT 100
+#define ERREUR_DIMENSIONS_INCORRECTES 101
+#define ERREUR_DIVISION_PAR_ZERO 102
+#define ERREUR_OUVERTURE_FICHIER 103
+#define ERREUR_FORMAT_FICHIER 104
+
+
+/************************************
+Template de manipulation de matrices
+
+Auteurs	: Aurèle LUCIANI - Benjamin POUVREAU
+Version	: 1.0	04/2017
+*************************************/
+template <class MType> class Cmatrice
 {
-	unsigned int uiLignes = 4;
-	unsigned int uiColonnes = 3;
-	int ** ppiTab = new int*[4];
-	for (int i = 0; i < 4; i++)
-		ppiTab[i] = new int[3];
-	ppiTab[0][0] = 0;
-	ppiTab[0][1] = 1;
-	ppiTab[0][2] = 2;
-	ppiTab[1][0] = 3;
-	ppiTab[1][1] = 4;
-	ppiTab[1][2] = 5;
-	ppiTab[2][0] = 6;
-	ppiTab[2][1] = 7;
-	ppiTab[2][2] = 8;
-	ppiTab[3][0] = 9;
-	ppiTab[3][1] = 10;
-	ppiTab[3][2] = 11;
+private:
+	unsigned int uiMATnombreLignes;
+	unsigned int uiMATnombreColonnes;
+	MType ** ppMTPMATmatrice;
 
-	Cmatrice<int> MAT1(uiLignes, uiColonnes, ppiTab);
-	try
-	{
-		cout << MAT1.MATgetElement(0,0) << "\t"
-			<< MAT1.MATgetElement(0,1) << "\t"
-			<< MAT1.MATgetElement(0,2) << endl
-			<< MAT1.MATgetElement(1,0) << "\t"
-			<< MAT1.MATgetElement(1,1) << "\t"
-			<< MAT1.MATgetElement(1,2) << endl
-			<< MAT1.MATgetElement(2,0) << "\t"
-			<< MAT1.MATgetElement(2,1) << "\t"
-			<< MAT1.MATgetElement(2,2) << endl
-			<< MAT1.MATgetElement(3,0) << "\t"
-			<< MAT1.MATgetElement(3,1) << "\t"
-			<< MAT1.MATgetElement(3,2) << endl << endl;
-	}
-	catch (Cexception EXCobjet)
-	{
-		cout << "Erreur code " << EXCobjet.EXClireValeur() << " : " << EXCobjet.EXClireMessage() << endl;
-	}
+public:
+	//Constructeurs et destructeur
+	Cmatrice();
+	Cmatrice(unsigned int uiNombreLignes, unsigned int uiNombreColonnes, MType ** ppMTPtableau);
+	Cmatrice(unsigned int uiNombreLignes, unsigned int uiNombreColonnes);
+	Cmatrice(Cmatrice<MType> & MATparam);
+	~Cmatrice(void);
 
-	Cmatrice<int> MAT2 = MAT1.MATtransposer();
-	cout << MAT2.MATgetElement(0,0) << "\t"
-		<< MAT2.MATgetElement(0,1) << "\t"
-		<< MAT2.MATgetElement(0,2) << "\t"
-		<< MAT2.MATgetElement(0,3) << endl
-		<< MAT2.MATgetElement(1,0) << "\t"
-		<< MAT2.MATgetElement(1,1) << "\t"
-		<< MAT2.MATgetElement(1,2) << "\t"
-		<< MAT2.MATgetElement(1,3) << endl
-		<< MAT2.MATgetElement(2,0) << "\t"
-		<< MAT2.MATgetElement(2,1) << "\t"
-		<< MAT2.MATgetElement(2,2) << "\t"
-		<< MAT2.MATgetElement(2,3) << endl << endl;
+	//Accesseurs
+	unsigned int MATgetNbrLignes() const
+		{ return uiMATnombreLignes; }
+	unsigned int MATgetNbrColonnes() const
+		{ return uiMATnombreColonnes; }
 
-	cout << "Mat1 : " << endl << MAT1 << endl << endl << "Mat2: " << endl << MAT2 << endl;
+	MType MATgetElement(unsigned int uiIndiceLigne, unsigned int uiIndiceColonne) const;
+	void MATsetElement(unsigned int uiIndiceLigne, unsigned int uiIndiceColonne, MType MTPelement);
 
-}
+	//Méthode
+	Cmatrice<MType> MATtransposer();
 
+	//Surcharges d'opérateurs
+	template <class ConstantType> Cmatrice<MType> operator*(ConstantType CTPconstante);
+	template <class ConstantType> Cmatrice<MType> operator/(ConstantType CTPconstante);
+
+	Cmatrice<MType> operator+(Cmatrice<MType> MATparam);
+	Cmatrice<MType> operator-(Cmatrice<MType> MATparam);
+	Cmatrice<MType> operator*(Cmatrice<MType> MATparam);
+	Cmatrice<MType> & operator=(Cmatrice<MType> MATparam);
+
+	
+};
+
+//Surcharges d'opérateurs
+template <class MType, class ConstantType> Cmatrice<MType> operator*(ConstantType CTPconstante,Cmatrice<MType> MATparam);
+template <class MType> ostream & operator<<(ostream& os, Cmatrice<MType> MATparam);
+
+//Parser
+Cmatrice<double> lireMatrice(const char * nomFichier);
+
+#include "Cmatrice.cpp"
+
+#endif //CMATRICE_H
