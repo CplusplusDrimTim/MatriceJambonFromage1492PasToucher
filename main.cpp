@@ -13,7 +13,7 @@ void main(int argc, char ** argv )
 	cout << "|         LIBRAIRIE DE MANIPULATION DE MATRICES            |" << endl;
 	cout << "|                  Programme de test                       |" << endl;
 	cout << "|                                                          |" << endl;
-	cout << "|     Aurele LUCIANI - Benjamin Pouvreau - Groupe 1        |" << endl;
+	cout << "|     Aurele LUCIANI - Benjamin POUVREAU - Groupe 1        |" << endl;
 	cout << "|     Projet C++ Part.1 - DI3 2017 - Polytech Tours        |" << endl;
 	cout << "|__________________________________________________________|" << endl << endl << endl;
 
